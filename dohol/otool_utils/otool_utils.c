@@ -145,7 +145,15 @@ char* ou_load_command_short_description(struct ofile* ofile, struct load_command
             snprintf(description, sizeof(description)-1, "segname: %16.16s   abs_file_offset: %10u   file_size: %10u   vmaddr: 0x%08x   vmsize: 0x%08x   vmsize: %10u", segment_command->segname, segment_command->fileoff+file_offset, segment_command->filesize, segment_command->vmaddr, segment_command->vmsize, segment_command->vmsize);
         }
             break;
-        case LC_SEGMENT_64:
+        case LC_SEGMENT_64: {
+            struct segment_command_64* segment_command = (struct segment_command_64*)load_command;
+            snprintf(description, sizeof(description)-1, "segname: %16.16s   abs_file_offset: %10llu   file_size: %10llu   vmaddr: 0x%.16llx   vmsize: 0x%08llx   vmsize: %10llu", segment_command->segname, segment_command->fileoff+file_offset, segment_command->filesize, segment_command->vmaddr, segment_command->vmsize, segment_command->vmsize);
+        }
+            break;
+        case LC_LOAD_DYLIB: {
+            struct dylib_command* dylib_command = (struct dylib_command*)load_command;
+            snprintf(description, sizeof(description)-1, "%s", (char*)dylib_command+dylib_command->dylib.name.offset);
+        }
             break;
     }
     
