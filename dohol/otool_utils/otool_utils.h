@@ -37,6 +37,8 @@ extern "C" {
     
     extern char* ou_load_command_short_description(struct ofile* ofile, struct load_command* load_command);
     
+    extern enum bool ou_is_segment_load_command(struct load_command* load_command);
+    
     extern struct segment_command_64* ou_segment_64(struct ofile* ofile, const char* name);
     extern struct section_64* ou_section_64(struct ofile* ofile, const char* segment_name, const char* section_name);
     extern enum bool ou_section_64_valid_addr(struct section_64* section, uint64_t addr);

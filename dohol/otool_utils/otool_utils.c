@@ -142,12 +142,12 @@ char* ou_load_command_short_description(struct ofile* ofile, struct load_command
     switch(load_command->cmd) {
         case LC_SEGMENT: {
             struct segment_command* segment_command = (struct segment_command*)load_command;
-            snprintf(description, sizeof(description)-1, "segname: %16.16s   abs_file_offset: %10u   file_size: %10u   vmaddr: 0x%08x   vmsize: 0x%08x   vmsize: %10u", segment_command->segname, segment_command->fileoff+file_offset, segment_command->filesize, segment_command->vmaddr, segment_command->vmsize, segment_command->vmsize);
+            snprintf(description, sizeof(description)-1, "segname: %16.16s  |  abs_file_offset: %10u  |  file_size: %10u  |  vmaddr: 0x%08x  |  vmsize: 0x%08x  |  vmsize: %10u", segment_command->segname, segment_command->fileoff+file_offset, segment_command->filesize, segment_command->vmaddr, segment_command->vmsize, segment_command->vmsize);
         }
             break;
         case LC_SEGMENT_64: {
             struct segment_command_64* segment_command = (struct segment_command_64*)load_command;
-            snprintf(description, sizeof(description)-1, "segname: %16.16s   abs_file_offset: %10llu   file_size: %10llu   vmaddr: 0x%.16llx   vmsize: 0x%08llx   vmsize: %10llu", segment_command->segname, segment_command->fileoff+file_offset, segment_command->filesize, segment_command->vmaddr, segment_command->vmsize, segment_command->vmsize);
+            snprintf(description, sizeof(description)-1, "segname: %16.16s  |  abs_file_offset: %10llu  |  file_size: %10llu  |  vmaddr: 0x%.16llx  |  vmsize: 0x%08llx  |  vmsize: %10llu", segment_command->segname, segment_command->fileoff+file_offset, segment_command->filesize, segment_command->vmaddr, segment_command->vmsize, segment_command->vmsize);
         }
             break;
         case LC_LOAD_DYLIB: {
@@ -155,9 +155,18 @@ char* ou_load_command_short_description(struct ofile* ofile, struct load_command
             snprintf(description, sizeof(description)-1, "%s", (char*)dylib_command+dylib_command->dylib.name.offset);
         }
             break;
+        case LC_DATA_IN_CODE: {
+            struct data_in_code_entry* data_in_code = (struct data_in_code_entry*)load_command;
+            snprintf(description, sizeof(description)-1, "offset: %10u  |  length: %10u  |  kind: %10u", data_in_code->offset+file_offset, data_in_code->length, data_in_code->kind);
+        }
+            break;
     }
     
     return description;
+}
+
+enum bool ou_is_segment_load_command(struct load_command* load_command) {
+    return load_command->cmd == LC_SEGMENT || load_command->cmd == LC_SEGMENT_64;
 }
 
 struct segment_command_64* ou_segment_64(struct ofile* ofile, const char* name) {

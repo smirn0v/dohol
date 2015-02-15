@@ -22,7 +22,12 @@ void ofile_processor(struct ofile* ofile, char* archname, void* cookie) {
     struct load_command* load_command = ofile->load_commands;
     
     for(uint32_t load_cmd_i = 0; load_cmd_i < load_commands_count; load_cmd_i++) {
-        printf("%s  %s\n",ou_human_readable_load_command_name(load_command->cmd), ou_load_command_short_description(ofile, load_command));
+        printf("%s  %s\n", ou_human_readable_load_command_name(load_command->cmd), ou_load_command_short_description(ofile, load_command));
+        
+        if(ou_is_segment_load_command(load_command)) {
+            
+        }
+        
         load_command = (struct load_command*)((char*)load_command + load_command->cmdsize);
     }
     printf("\n");
